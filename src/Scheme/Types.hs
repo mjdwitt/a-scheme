@@ -47,13 +47,19 @@ data Expr = Val Integer
 -- a Value datatype.
 data Value = IntVal Integer
            | LamVal Name Expr Env
-  deriving (Eq)
 
 -- We won't bother with displaying any extra information about an evaluated 
 -- lambda expression.
 instance Show Value where
   show (IntVal n) = show n
   show (LamVal _ _ _) = "#<procedure>"
+
+-- We also won't bother comparing evaluated lambdas for equality
+instance Eq Value where
+  IntVal n == IntVal m = n == m
+  _ == _ = False
+
+
 
 -- Environments will simply be Maps from Names to Values
 type Env = M.Map Name Value
