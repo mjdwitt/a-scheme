@@ -23,6 +23,17 @@ main = hspec $ do
       parseScheme "(lambda (x) x)" `shouldBe` Right (Lam (intern "x") (Var $ intern "x"))
     it "parses application sexprs" $ do
       parseScheme "(x x)" `shouldBe` Right (App (Var $ intern "x") (Var $ intern "x"))
+    it "parses complicated sexprs" $ do
+      (parseScheme "(((lambda (x) (lambda (v) x)) 7) 42)" `shouldBe`) $ Right
+        (App (App (Lam (intern "x") (Lam (intern "v") (Var $ intern "x")))
+                  (Val 7))
+             (Val 42))
+      (parseScheme "(((lambda (x) (lambda (f) (f x))) 42) (lambda (y) y))" `shouldBe`) $ Right
+        (App (App (Lam (intern "x")
+                    (Lam (intern "f")
+                      (App (Var $ intern "f") (Var $ intern "x"))))
+                  (Val 42))
+             (Lam (intern "y") (Var $ intern "y")))
     it "errors on invalid input" $ do
       parseScheme "" `shouldSatisfy` isError
       parseScheme "(x)" `shouldSatisfy` isError
