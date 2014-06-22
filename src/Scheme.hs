@@ -21,10 +21,12 @@ evalExpr expr env = case expr of
   App rator rand -> do
     x <- evalExpr rand env
     f <- evalExpr rator env
-    case f of
-      IntVal _     -> Left . RuntimeError $ "attempt to apply non-procedure " ++ show f
-      LamVal v bod env' -> evalExpr bod $ extend env' v x
-  
+    attemptApply f x
+
   where maybeUnbound :: Name -> Maybe Value -> Either SchemeError Value
         maybeUnbound v Nothing  = Left . RuntimeError $ "attempt to reference unbound variable " ++ show v
         maybeUnbound _ (Just x) = Right x
+
+        attemptApply :: Value -> Value -> Either SchemeError Value
+        attemptApply (LamVal v bod env') x = evalExpr bod $ extend env' v x
+        attemptApply value _ = Left . RuntimeError $ "attempt to apply non-procedure " ++ show value
