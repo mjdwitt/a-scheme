@@ -3,14 +3,10 @@ module Main where
 import Test.Hspec
 
 import Data.Symbol
-import qualified Text.Parsec.Error
 
+import Scheme.Error()
 import Scheme.Parser
-
-
-
-instance Eq Text.Parsec.Error.ParseError where
-  _ == _ = False
+import Scheme.Types
 
 
 
@@ -26,3 +22,11 @@ main = hspec $ do
       parseScheme "(lambda (x) x)" `shouldBe` Right (Lam (intern "x") (Var $ intern "x"))
     it "parses application sexprs" $ do
       parseScheme "(x x)" `shouldBe` Right (App (Var $ intern "x") (Var $ intern "x"))
+    it "errors on invalid input" $ do
+      parseScheme "" `shouldSatisfy` isError
+      parseScheme "(x)" `shouldSatisfy` isError
+      parseScheme "(x x x)" `shouldSatisfy` isError
+
+    where isError :: Either error Expr -> Bool
+          isError (Right _) = False
+          isError (Left _)  = True
