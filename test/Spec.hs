@@ -20,7 +20,7 @@ main = hspec $ do
   describe "parseScheme" $ do
     it "parses integers" $ do
       parseScheme "42" `shouldBe` Right (Val 42)
-    it "parses symbols" $ do
+    it "parses names" $ do
       parseScheme "x" `shouldBe` Right (Var $ intern "x")
     it "parses lambda sexprs" $ do
       parseScheme "(lambda (x) x)" `shouldBe` Right (Lam (intern "x") (Var $ intern "x"))
