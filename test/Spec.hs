@@ -42,6 +42,10 @@ main = hspec $ do
         eval "((lambda (x) 42) 7)" `shouldBe` Right (IntVal 42)
       it "for variable bodies" $ do
         eval "((lambda (x) x) 42)" `shouldBe` Right (IntVal 42)
+      it "for complex lambdas" $ do
+        eval "(((lambda (x) (lambda (v) x)) 7) 42)" `shouldBe` Right (IntVal 42)
+      it "for complex arguments" $ do
+        eval "(((lambda (x) (lambda (f) (f x))) 42) (lambda (y) y))" `shouldBe` Right (IntVal 42)
 
     where isError :: Either error value -> Bool
           isError (Right _) = False
