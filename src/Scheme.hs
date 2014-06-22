@@ -8,11 +8,15 @@ import Scheme.Types
 
 
 
+-- | The main interpreter. @eval@ parses the input string with @parseScheme@
+-- and sends the result to @evalExpr@ with an empty environment.
 eval :: String -> Either SchemeError Value
 eval input = case parseScheme input of
   Left err   -> Left $ SyntaxError err
   Right expr -> evalExpr expr emptyEnv
 
+-- | A basic lexical interpreter for our extended lambda calculus defined by 
+-- @Expr@ in @Scheme.Types@.
 evalExpr :: Expr -> Env -> Either SchemeError Value
 evalExpr expr env = case expr of
   Val n     -> Right $ IntVal n
