@@ -3,8 +3,15 @@ module Scheme.Types
   , Name
   , intern
   , Value(..)
+  , Env
+  , emptyEnv
+  , extend
+  , lookup
   ) where
 
+import Prelude hiding(lookup)
+
+import qualified Data.Map.Lazy as M
 import Data.Symbol
 
 
@@ -39,11 +46,23 @@ data Expr = Val Integer
 -- Our interpreter will evaluate Exprs and return Integers or Lambdas wrapped in 
 -- a Value datatype.
 data Value = IntVal Integer
-           | LamVal Name Expr
+           | LamVal Name Expr Env
   deriving (Eq)
 
 -- We won't bother with displaying any extra information about an evaluated 
 -- lambda expression.
 instance Show Value where
   show (IntVal n) = show n
-  show (LamVal _ _) = "#<procedure>"
+  show (LamVal _ _ _) = "#<procedure>"
+
+-- Environments will simply be Maps from Names to Values
+type Env = M.Map Name Value
+
+emptyEnv :: Env
+emptyEnv = M.empty
+
+extend :: Env -> Name -> Value -> Env
+extend env name value = M.insert name value env
+
+lookup :: Env -> Name -> Maybe Value
+lookup env name = M.lookup name env

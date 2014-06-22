@@ -24,10 +24,10 @@ main = hspec $ do
     it "parses application sexprs" $ do
       parseScheme "(x x)" `shouldBe` Right (App (Var $ intern "x") (Var $ intern "x"))
     it "parses complicated sexprs" $ do
-      (parseScheme "(((lambda (x) (lambda (v) x)) 7) 42)" `shouldBe`) $ Right
+      (parseScheme "(((lambda (x) (lambda (v) x)) 42) 7)" `shouldBe`) $ Right
         (App (App (Lam (intern "x") (Lam (intern "v") (Var $ intern "x")))
-                  (Val 7))
-             (Val 42))
+                  (Val 42))
+             (Val 7))
       (parseScheme "(((lambda (x) (lambda (f) (f x))) 42) (lambda (y) y))" `shouldBe`) $ Right
         (App (App (Lam (intern "x")
                     (Lam (intern "f")
@@ -54,7 +54,7 @@ main = hspec $ do
       it "for variable bodies" $ do
         eval "((lambda (x) x) 42)" `shouldBe` Right (IntVal 42)
       it "for complex lambdas" $ do
-        eval "(((lambda (x) (lambda (v) x)) 7) 42)" `shouldBe` Right (IntVal 42)
+        eval "(((lambda (x) (lambda (v) x)) 42) 7)" `shouldBe` Right (IntVal 42)
       it "for complex arguments" $ do
         eval "(((lambda (x) (lambda (f) (f x))) 42) (lambda (y) y))" `shouldBe` Right (IntVal 42)
 
