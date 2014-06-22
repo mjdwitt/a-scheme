@@ -1,43 +1,20 @@
+{-# OPTIONS_GHC -fno-warn-missing-signatures #-}
+
 module Scheme.Parser where
 
-import Data.Symbol
 import Text.Parsec
 import Text.Parsec.Expr
 import Text.Parsec.Language
 import Text.Parsec.String
 import Text.Parsec.Token
 
-
-
--- We'll use Symbols for names in our language. Symbols aren't built in to 
--- Haskell, but they can be easily added via the symbol package and created and 
--- inspected using the @intern@ and @unintern@ functions in @Data.Symbol@.
-type Name = Symbol
-
--- Our language will start as a basic lambda calculus plus integers.
---
---      Expr ::= int
---             | var
---             | (lambda (name) Expr)
---             | (Expr Expr)
---
---  This BNF is isomorphic to the following Haskell algebraic datatype 
---  definition:
-data Expr = Val Integer
-          | Var Name
-          | Lam Name Expr
-          | App Expr Expr
-  deriving (Show, Eq)
-
--- (The last line in the definition of Expr there tells the compiler to 
--- automatically derive an instance of the Show typeclass for our new Expr 
--- datatype. This allows us to call the show function on any Expr--Haskell's 
--- equivalent to many other language's toString.)
+-- First, we'll import our internal types for expressions
+import Scheme.Types (Expr(..), intern)
 
 
 
 -- Next, we'll define the rules for making identifiers in our language.
-lang = emptyDef{ identStart = letter
+lang = emptyDef{ identStart = noneOf " \t\r\n\f\v()"
                , identLetter = noneOf " \t\r\n\f\v()"
                , reservedNames = ["lambda"]
                , caseSensitive = True
