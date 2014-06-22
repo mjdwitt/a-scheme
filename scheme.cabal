@@ -19,7 +19,7 @@ executable scheme
   ghc-options:          -Wall
   hs-source-dirs:       src
   main-is:              Main.hs
-  build-depends:        base >=4.6 && <4.7, parsec, symbol
+  build-depends:        base >=4.6 && <4.7, parsec, symbol, containers
   default-language:     Haskell2010
 
 test-suite tests
@@ -28,5 +28,5 @@ test-suite tests
   type:                 exitcode-stdio-1.0
   hs-source-dirs:       src, test
   main-is:              Spec.hs
-  build-depends:        base, hspec, parsec, symbol
+  build-depends:        base, hspec, parsec, symbol, containers
   default-language:     Haskell2010

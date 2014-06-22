@@ -4,6 +4,7 @@ import Test.Hspec
 
 import Data.Symbol
 
+import Scheme
 import Scheme.Error()
 import Scheme.Parser
 import Scheme.Types
@@ -27,6 +28,21 @@ main = hspec $ do
       parseScheme "(x)" `shouldSatisfy` isError
       parseScheme "(x x x)" `shouldSatisfy` isError
 
-    where isError :: Either error Expr -> Bool
+  describe "eval" $ do
+    it "evaluates integers" $ do
+      eval "42" `shouldBe` Right (IntVal 42)
+    it "errors on unbound variables" $ do
+      eval "x" `shouldSatisfy` isError
+    it "doesn't evaluate lambda bodies until application" $ do
+      eval "(lambda (x) y)" `shouldSatisfy` not . isError
+    it "evaluates lambda bodies on application" $ do
+      eval "((lambda (x) y) 42)" `shouldSatisfy` isError
+    context "returns evaluated lambda bodies" $ do
+      it "for constant bodies" $ do
+        eval "((lambda (x) 42) 7)" `shouldBe` Right (IntVal 42)
+      it "for variable bodies" $ do
+        eval "((lambda (x) x) 42)" `shouldBe` Right (IntVal 42)
+
+    where isError :: Either error value -> Bool
           isError (Right _) = False
           isError (Left _)  = True
