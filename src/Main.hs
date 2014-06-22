@@ -2,7 +2,7 @@ module Main where
 
 import System.Environment(getArgs)
 
-import Scheme.Parser(parseScheme)
+import Scheme(eval)
 
 
 
@@ -11,6 +11,6 @@ import Scheme.Parser(parseScheme)
 main :: IO ()
 main = do
   args <- getArgs
-  case parseScheme (head args) of
+  case eval (head args) of
     Left err -> print err
     Right res -> print res
